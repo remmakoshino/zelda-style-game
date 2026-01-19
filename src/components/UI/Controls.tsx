@@ -76,7 +76,8 @@ export const VirtualControls: React.FC = () => {
   }, [setTouchMove]);
   
   // アクションボタン処理
-  const handleButtonPress = useCallback((action: string) => {
+  const handleButtonPress = useCallback((e: React.TouchEvent, action: string) => {
+    e.preventDefault();
     setTouchAction(action as any, true);
     
     // 一定時間後にリリース
@@ -85,11 +86,13 @@ export const VirtualControls: React.FC = () => {
     }, 100);
   }, [setTouchAction]);
   
-  const handleButtonDown = useCallback((action: string) => {
+  const handleButtonDown = useCallback((e: React.TouchEvent, action: string) => {
+    e.preventDefault();
     setTouchAction(action as any, true);
   }, [setTouchAction]);
   
-  const handleButtonUp = useCallback((action: string) => {
+  const handleButtonUp = useCallback((e: React.TouchEvent, action: string) => {
+    e.preventDefault();
     setTouchAction(action as any, false);
   }, [setTouchAction]);
   
@@ -114,8 +117,8 @@ export const VirtualControls: React.FC = () => {
         {/* 攻撃ボタン */}
         <button
           className="action-button attack"
-          onTouchStart={() => handleButtonDown('attack')}
-          onTouchEnd={() => handleButtonUp('attack')}
+          onTouchStart={(e) => handleButtonDown(e, 'attack')}
+          onTouchEnd={(e) => handleButtonUp(e, 'attack')}
         >
           <span className="button-label">⚔️</span>
           <span className="button-text">攻撃</span>
@@ -124,7 +127,7 @@ export const VirtualControls: React.FC = () => {
         {/* ジャンプボタン */}
         <button
           className="action-button jump"
-          onTouchStart={() => handleButtonPress('jump')}
+          onTouchStart={(e) => handleButtonPress(e, 'jump')}
         >
           <span className="button-label">⬆️</span>
           <span className="button-text">ジャンプ</span>
@@ -133,8 +136,8 @@ export const VirtualControls: React.FC = () => {
         {/* 防御ボタン */}
         <button
           className="action-button defend"
-          onTouchStart={() => handleButtonDown('defend')}
-          onTouchEnd={() => handleButtonUp('defend')}
+          onTouchStart={(e) => handleButtonDown(e, 'defend')}
+          onTouchEnd={(e) => handleButtonUp(e, 'defend')}
         >
           <span className="button-label">🛡️</span>
           <span className="button-text">防御</span>
@@ -143,7 +146,7 @@ export const VirtualControls: React.FC = () => {
         {/* ローリングボタン */}
         <button
           className="action-button roll"
-          onTouchStart={() => handleButtonPress('roll')}
+          onTouchStart={(e) => handleButtonPress(e, 'roll')}
         >
           <span className="button-label">🔄</span>
           <span className="button-text">回避</span>
@@ -155,7 +158,7 @@ export const VirtualControls: React.FC = () => {
         {/* メニューボタン */}
         <button
           className="system-button menu"
-          onTouchStart={() => toggleMenu()}
+          onTouchStart={(e) => { e.preventDefault(); toggleMenu(); }}
         >
           <span>☰</span>
         </button>
@@ -163,7 +166,7 @@ export const VirtualControls: React.FC = () => {
         {/* ターゲットロックボタン */}
         <button
           className="system-button target"
-          onTouchStart={() => handleButtonPress('targetLock')}
+          onTouchStart={(e) => handleButtonPress(e, 'targetLock')}
         >
           <span>🎯</span>
         </button>
@@ -171,7 +174,7 @@ export const VirtualControls: React.FC = () => {
         {/* アイテム使用ボタン */}
         <button
           className="system-button item"
-          onTouchStart={() => handleButtonPress('useItem')}
+          onTouchStart={(e) => handleButtonPress(e, 'useItem')}
         >
           <span>🎒</span>
         </button>
@@ -180,7 +183,7 @@ export const VirtualControls: React.FC = () => {
       {/* インタラクトボタン */}
       <button
         className="interact-button"
-        onTouchStart={() => handleButtonPress('interact')}
+        onTouchStart={(e) => handleButtonPress(e, 'interact')}
       >
         <span>Ⓐ</span>
       </button>

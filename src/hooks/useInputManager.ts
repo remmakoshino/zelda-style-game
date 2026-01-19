@@ -204,12 +204,6 @@ export const useInputManager = () => {
   const setTouchMove = useCallback((x: number, y: number) => {
     inputStateRef.current.touchMoveX = x;
     inputStateRef.current.touchMoveY = y;
-    
-    // タッチ入力を移動に変換
-    inputStateRef.current.moveForward = y < -0.3;
-    inputStateRef.current.moveBackward = y > 0.3;
-    inputStateRef.current.moveLeft = x < -0.3;
-    inputStateRef.current.moveRight = x > 0.3;
   }, []);
   
   // タッチアクションを設定
