@@ -56,11 +56,15 @@ const initialInputState: InputState = {
   touchMoveY: 0,
 };
 
+// グローバルな入力状態ref（全コンポーネントで共有）
+const globalInputStateRef: { current: InputState } = {
+  current: { ...initialInputState }
+};
+
 // 入力マネージャーフック
 export const useInputManager = () => {
   const { deviceType, isTouchDevice } = useDeviceDetection();
   const gameState = useGameStore((state) => state.gameState);
-  const inputStateRef = useRef<InputState>({ ...initialInputState });
   const keysPressed = useRef<Set<string>>(new Set());
   
   // キーダウンハンドラー
@@ -71,29 +75,29 @@ export const useInputManager = () => {
     keysPressed.current.add(key);
     
     // 移動
-    if (key === 'w' || key === 'arrowup') inputStateRef.current.moveForward = true;
-    if (key === 's' || key === 'arrowdown') inputStateRef.current.moveBackward = true;
-    if (key === 'a' || key === 'arrowleft') inputStateRef.current.moveLeft = true;
-    if (key === 'd' || key === 'arrowright') inputStateRef.current.moveRight = true;
+    if (key === 'w' || key === 'arrowup') globalInputStateRef.current.moveForward = true;
+    if (key === 's' || key === 'arrowdown') globalInputStateRef.current.moveBackward = true;
+    if (key === 'a' || key === 'arrowleft') globalInputStateRef.current.moveLeft = true;
+    if (key === 'd' || key === 'arrowright') globalInputStateRef.current.moveRight = true;
     
     // アクション
     if (key === ' ') {
-      inputStateRef.current.jump = true;
+      globalInputStateRef.current.jump = true;
       event.preventDefault();
     }
-    if (key === 'shift') inputStateRef.current.roll = true;
-    if (key === 'e') inputStateRef.current.interact = true;
-    if (key === 'q') inputStateRef.current.targetLock = true;
-    if (key === 'r') inputStateRef.current.useItem = true;
+    if (key === 'shift') globalInputStateRef.current.roll = true;
+    if (key === 'e') globalInputStateRef.current.interact = true;
+    if (key === 'q') globalInputStateRef.current.targetLock = true;
+    if (key === 'r') globalInputStateRef.current.useItem = true;
     
     // ポーズ
     if (key === 'escape' || key === 'p') {
-      inputStateRef.current.pause = true;
+      globalInputStateRef.current.pause = true;
     }
     
     // アイテムスロット
     if (key >= '1' && key <= '5') {
-      inputStateRef.current.itemSlot = parseInt(key) - 1;
+      globalInputStateRef.current.itemSlot = parseInt(key) - 1;
     }
   }, [gameState]);
   
@@ -103,26 +107,26 @@ export const useInputManager = () => {
     keysPressed.current.delete(key);
     
     // 移動
-    if (key === 'w' || key === 'arrowup') inputStateRef.current.moveForward = false;
-    if (key === 's' || key === 'arrowdown') inputStateRef.current.moveBackward = false;
-    if (key === 'a' || key === 'arrowleft') inputStateRef.current.moveLeft = false;
-    if (key === 'd' || key === 'arrowright') inputStateRef.current.moveRight = false;
+    if (key === 'w' || key === 'arrowup') globalInputStateRef.current.moveForward = false;
+    if (key === 's' || key === 'arrowdown') globalInputStateRef.current.moveBackward = false;
+    if (key === 'a' || key === 'arrowleft') globalInputStateRef.current.moveLeft = false;
+    if (key === 'd' || key === 'arrowright') globalInputStateRef.current.moveRight = false;
     
     // アクション
-    if (key === ' ') inputStateRef.current.jump = false;
-    if (key === 'shift') inputStateRef.current.roll = false;
-    if (key === 'e') inputStateRef.current.interact = false;
-    if (key === 'q') inputStateRef.current.targetLock = false;
-    if (key === 'r') inputStateRef.current.useItem = false;
+    if (key === ' ') globalInputStateRef.current.jump = false;
+    if (key === 'shift') globalInputStateRef.current.roll = false;
+    if (key === 'e') globalInputStateRef.current.interact = false;
+    if (key === 'q') globalInputStateRef.current.targetLock = false;
+    if (key === 'r') globalInputStateRef.current.useItem = false;
     
     // ポーズ
     if (key === 'escape' || key === 'p') {
-      inputStateRef.current.pause = false;
+      globalInputStateRef.current.pause = false;
     }
     
     // アイテムスロット
     if (key >= '1' && key <= '5') {
-      inputStateRef.current.itemSlot = -1;
+      globalInputStateRef.current.itemSlot = -1;
     }
   }, []);
   
@@ -130,8 +134,8 @@ export const useInputManager = () => {
   const handleMouseMove = useCallback((event: MouseEvent) => {
     if (gameState !== GameState.PLAYING) return;
     if (document.pointerLockElement) {
-      inputStateRef.current.cameraRotateX = event.movementX * GAME_CONFIG.camera.rotationSpeed;
-      inputStateRef.current.cameraRotateY = event.movementY * GAME_CONFIG.camera.rotationSpeed;
+      globalInputStateRef.current.cameraRotateX = event.movementX * GAME_CONFIG.camera.rotationSpeed;
+      globalInputStateRef.current.cameraRotateY = event.movementY * GAME_CONFIG.camera.rotationSpeed;
     }
   }, [gameState]);
   
@@ -140,20 +144,20 @@ export const useInputManager = () => {
     if (gameState !== GameState.PLAYING) return;
     
     if (event.button === 0) { // 左クリック
-      inputStateRef.current.attack = true;
+      globalInputStateRef.current.attack = true;
     }
     if (event.button === 2) { // 右クリック
-      inputStateRef.current.defend = true;
+      globalInputStateRef.current.defend = true;
     }
   }, [gameState]);
   
   // マウスアップハンドラー
   const handleMouseUp = useCallback((event: MouseEvent) => {
     if (event.button === 0) {
-      inputStateRef.current.attack = false;
+      globalInputStateRef.current.attack = false;
     }
     if (event.button === 2) {
-      inputStateRef.current.defend = false;
+      globalInputStateRef.current.defend = false;
     }
   }, []);
   
@@ -164,7 +168,7 @@ export const useInputManager = () => {
   
   // フォーカスを失った時のリセット
   const handleBlur = useCallback(() => {
-    inputStateRef.current = { ...initialInputState };
+    globalInputStateRef.current = { ...initialInputState };
     keysPressed.current.clear();
   }, []);
   
@@ -191,24 +195,24 @@ export const useInputManager = () => {
   
   // 入力状態を取得
   const getInputState = useCallback((): InputState => {
-    return { ...inputStateRef.current };
+    return { ...globalInputStateRef.current };
   }, []);
   
   // カメラ回転をリセット
   const resetCameraRotation = useCallback(() => {
-    inputStateRef.current.cameraRotateX = 0;
-    inputStateRef.current.cameraRotateY = 0;
+    globalInputStateRef.current.cameraRotateX = 0;
+    globalInputStateRef.current.cameraRotateY = 0;
   }, []);
   
   // タッチ入力を更新（バーチャルジョイスティック用）
   const setTouchMove = useCallback((x: number, y: number) => {
-    inputStateRef.current.touchMoveX = x;
-    inputStateRef.current.touchMoveY = y;
+    globalInputStateRef.current.touchMoveX = x;
+    globalInputStateRef.current.touchMoveY = y;
   }, []);
   
   // タッチアクションを設定
   const setTouchAction = useCallback((action: keyof InputState, value: boolean) => {
-    (inputStateRef.current as any)[action] = value;
+    (globalInputStateRef.current as any)[action] = value;
   }, []);
   
   return {

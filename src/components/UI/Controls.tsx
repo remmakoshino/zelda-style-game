@@ -15,14 +15,26 @@ export const VirtualControls: React.FC = () => {
   const [isJoystickActive, setIsJoystickActive] = useState(false);
   const joystickCenterRef = useRef({ x: 0, y: 0 });
   
+  // デバッグログ
+  useEffect(() => {
+    console.log('VirtualControls render:', { isTouchDevice, gameState, deviceType });
+  }, [isTouchDevice, gameState, deviceType]);
+  
   // ジョイスティックが非表示の場合は何も表示しない
-  if (!isTouchDevice || gameState !== GameState.PLAYING) {
+  if (!isTouchDevice) {
+    console.log('VirtualControls hidden: not touch device');
+    return null;
+  }
+  
+  if (gameState !== GameState.PLAYING) {
+    console.log('VirtualControls hidden: game state is', gameState);
     return null;
   }
   
   // ジョイスティックのタッチ処理
   const handleJoystickStart = useCallback((e: React.TouchEvent) => {
     e.preventDefault();
+    console.log('Joystick touch start');
     const touch = e.touches[0];
     const rect = joystickRef.current?.getBoundingClientRect();
     
@@ -44,6 +56,7 @@ export const VirtualControls: React.FC = () => {
   }, [isJoystickActive]);
   
   const handleJoystickEnd = useCallback(() => {
+    console.log('Joystick touch end');
     setIsJoystickActive(false);
     setTouchMove(0, 0);
     
@@ -72,12 +85,16 @@ export const VirtualControls: React.FC = () => {
     }
     
     // 正規化された値を送信（-1 to 1）
-    setTouchMove(deltaX / maxDistance, deltaY / maxDistance);
+    const normalizedX = deltaX / maxDistance;
+    const normalizedY = deltaY / maxDistance;
+    console.log('Joystick move:', normalizedX, normalizedY);
+    setTouchMove(normalizedX, normalizedY);
   }, [setTouchMove]);
   
   // アクションボタン処理
   const handleButtonPress = useCallback((e: React.TouchEvent, action: string) => {
     e.preventDefault();
+    console.log('Button press:', action);
     setTouchAction(action as any, true);
     
     // 一定時間後にリリース
@@ -88,11 +105,13 @@ export const VirtualControls: React.FC = () => {
   
   const handleButtonDown = useCallback((e: React.TouchEvent, action: string) => {
     e.preventDefault();
+    console.log('Button down:', action);
     setTouchAction(action as any, true);
   }, [setTouchAction]);
   
   const handleButtonUp = useCallback((e: React.TouchEvent, action: string) => {
     e.preventDefault();
+    console.log('Button up:', action);
     setTouchAction(action as any, false);
   }, [setTouchAction]);
   
