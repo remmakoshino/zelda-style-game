@@ -1,0 +1,398 @@
+.virtual-controls {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 200;
+  touch-action: none;
+}
+
+/* ジョイスティック */
+.joystick-container {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  width: 120px;
+  height: 120px;
+  pointer-events: auto;
+}
+
+.joystick-base {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  position: relative;
+}
+
+.joystick-knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(200,200,200,0.8) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* アクションボタン */
+.action-buttons {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  pointer-events: auto;
+}
+
+.action-button {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.1s ease;
+}
+
+.action-button:active {
+  transform: scale(0.9);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.action-button .button-label {
+  font-size: 24px;
+}
+
+.action-button .button-text {
+  font-size: 10px;
+  margin-top: 2px;
+  opacity: 0.8;
+}
+
+.action-button.attack {
+  border-color: rgba(255, 100, 100, 0.6);
+  background: rgba(255, 100, 100, 0.2);
+}
+
+.action-button.jump {
+  border-color: rgba(100, 255, 100, 0.6);
+  background: rgba(100, 255, 100, 0.2);
+}
+
+.action-button.defend {
+  border-color: rgba(100, 100, 255, 0.6);
+  background: rgba(100, 100, 255, 0.2);
+}
+
+.action-button.roll {
+  border-color: rgba(255, 255, 100, 0.6);
+  background: rgba(255, 255, 100, 0.2);
+}
+
+/* システムボタン */
+.system-buttons {
+  position: absolute;
+  top: 70px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.system-button {
+  width: 45px;
+  height: 45px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.system-button:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* インタラクトボタン */
+.interact-button {
+  position: absolute;
+  bottom: 160px;
+  right: 50px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 215, 0, 0.6);
+  background: rgba(255, 215, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: #ffd700;
+  font-weight: bold;
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.interact-button:active {
+  transform: scale(0.9);
+  background: rgba(255, 215, 0, 0.4);
+}
+
+/* ダイアログボックス */
+.dialogue-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  z-index: 300;
+}
+
+.dialogue-box {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 30px;
+  background: linear-gradient(180deg, rgba(0,0,50,0.9) 0%, rgba(0,0,30,0.95) 100%);
+  border: 3px solid rgba(255, 215, 0, 0.5);
+  border-radius: 10px;
+  position: relative;
+}
+
+.dialogue-text {
+  font-size: 18px;
+  color: white;
+  line-height: 1.6;
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.dialogue-indicator {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+}
+
+.next-indicator {
+  color: #ffd700;
+  animation: bounce 0.5s infinite alternate;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(5px); }
+}
+
+.end-indicator {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+}
+
+.dialogue-hint {
+  position: absolute;
+  bottom: 10px;
+  left: 20px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ポーズメニュー */
+.pause-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 400;
+}
+
+.pause-menu {
+  background: linear-gradient(180deg, #1a1a4e 0%, #0a0a2e 100%);
+  border: 3px solid rgba(255, 215, 0, 0.5);
+  border-radius: 15px;
+  padding: 30px 50px;
+  text-align: center;
+}
+
+.pause-menu h2 {
+  color: #ffd700;
+  margin: 0 0 20px;
+  font-size: 2rem;
+}
+
+.pause-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.pause-buttons button {
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.pause-buttons button:hover {
+  background: rgba(255, 215, 0, 0.2);
+  border-color: #ffd700;
+}
+
+/* ゲームオーバー */
+.gameover-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(50, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.gameover-content {
+  text-align: center;
+}
+
+.gameover-content h1 {
+  font-size: 4rem;
+  color: #ff0000;
+  text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+  margin: 0 0 40px;
+  animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.gameover-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.gameover-buttons button {
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.gameover-buttons button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: white;
+}
+
+/* モバイル調整 */
+.virtual-controls.mobile .joystick-container {
+  width: 100px;
+  height: 100px;
+  bottom: 20px;
+  left: 20px;
+}
+
+.virtual-controls.mobile .joystick-knob {
+  width: 40px;
+  height: 40px;
+}
+
+.virtual-controls.mobile .action-buttons {
+  bottom: 20px;
+  right: 20px;
+  gap: 10px;
+}
+
+.virtual-controls.mobile .action-button {
+  width: 55px;
+  height: 55px;
+}
+
+.virtual-controls.mobile .action-button .button-label {
+  font-size: 20px;
+}
+
+.virtual-controls.mobile .action-button .button-text {
+  font-size: 8px;
+}
+
+.virtual-controls.mobile .system-buttons {
+  top: 50px;
+  right: 10px;
+}
+
+.virtual-controls.mobile .system-button {
+  width: 38px;
+  height: 38px;
+  font-size: 16px;
+}
+
+.virtual-controls.mobile .interact-button {
+  bottom: 120px;
+  right: 40px;
+  width: 50px;
+  height: 50px;
+  font-size: 22px;
+}
+
+.virtual-controls.mobile .dialogue-box {
+  padding: 15px 20px;
+}
+
+.virtual-controls.mobile .dialogue-text {
+  font-size: 14px;
+}
+
+/* タブレット調整 */
+.virtual-controls.tablet .joystick-container {
+  width: 110px;
+  height: 110px;
+}
+
+.virtual-controls.tablet .action-button {
+  width: 65px;
+  height: 65px;
+}
