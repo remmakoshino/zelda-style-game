@@ -225,45 +225,102 @@ export const Player: React.FC<PlayerProps> = ({ initialPosition = [0, 1, 0] }) =
   
   return (
     <group ref={meshRef}>
-      {/* 体 */}
-      <mesh position={[0, 0, 0]} material={bodyMaterial} castShadow>
-        <capsuleGeometry args={[0.3, 0.6, 8, 16]} />
+      {/* 体（胴体） */}
+      <mesh position={[0, 0.2, 0]} material={bodyMaterial} castShadow>
+        <boxGeometry args={[0.5, 0.7, 0.3]} />
       </mesh>
       
       {/* 頭 */}
-      <mesh position={[0, 0.7, 0]} material={headMaterial} castShadow>
-        <sphereGeometry args={[0.25, 16, 16]} />
+      <mesh position={[0, 0.75, 0]} material={headMaterial} castShadow>
+        <sphereGeometry args={[0.22, 16, 16]} />
       </mesh>
       
-      {/* 帽子（緑） */}
-      <mesh position={[0, 0.85, -0.1]} castShadow>
-        <coneGeometry args={[0.2, 0.4, 8]} />
+      {/* 帽子（リンク風の緑帽子） */}
+      <mesh position={[0, 0.92, -0.08]} rotation={[0.2, 0, 0]} castShadow>
+        <coneGeometry args={[0.24, 0.45, 8]} />
         <meshStandardMaterial color="#2d5a27" />
       </mesh>
       
+      {/* 右腕 */}
+      <mesh position={[0.35, 0.15, 0]} rotation={[0, 0, 0.2]} castShadow>
+        <capsuleGeometry args={[0.08, 0.4, 6, 12]} />
+        <meshStandardMaterial color="#2d5a27" />
+      </mesh>
+      
+      {/* 左腕 */}
+      <mesh position={[-0.35, 0.15, 0]} rotation={[0, 0, -0.2]} castShadow>
+        <capsuleGeometry args={[0.08, 0.4, 6, 12]} />
+        <meshStandardMaterial color="#2d5a27" />
+      </mesh>
+      
+      {/* 右足 */}
+      <mesh position={[0.15, -0.35, 0]} castShadow>
+        <capsuleGeometry args={[0.1, 0.5, 6, 12]} />
+        <meshStandardMaterial color="#654321" />
+      </mesh>
+      
+      {/* 左足 */}
+      <mesh position={[-0.15, -0.35, 0]} castShadow>
+        <capsuleGeometry args={[0.1, 0.5, 6, 12]} />
+        <meshStandardMaterial color="#654321" />
+      </mesh>
+      
       {/* 剣 */}
-      <group position={[0.5, 0, 0]} rotation={[0, 0, -0.3]}>
-        <mesh ref={swordRef} position={[0, 0.2, 0]} castShadow>
+      <group position={[0.55, 0.1, 0]} rotation={[0, 0, -0.4]}>
+        <mesh ref={swordRef} position={[0, 0.3, 0]} castShadow>
           {/* 刃 */}
-          <boxGeometry args={[0.08, 0.6, 0.02]} />
-          <meshStandardMaterial color="#c0c0c0" metalness={0.8} roughness={0.2} />
+          <boxGeometry args={[0.1, 0.8, 0.02]} />
+          <meshStandardMaterial color="#e0e0e0" metalness={0.9} roughness={0.1} emissive="#4080ff" emissiveIntensity={0.1} />
         </mesh>
         {/* 柄 */}
-        <mesh position={[0, -0.15, 0]} castShadow>
-          <boxGeometry args={[0.15, 0.1, 0.05]} />
+        <mesh position={[0, -0.2, 0]} castShadow>
+          <boxGeometry args={[0.18, 0.12, 0.06]} />
           <meshStandardMaterial color="#8b4513" />
         </mesh>
-        <mesh position={[0, -0.25, 0]} castShadow>
-          <cylinderGeometry args={[0.03, 0.03, 0.15, 8]} />
+        <mesh position={[0, -0.32, 0]} castShadow>
+          <cylinderGeometry args={[0.04, 0.04, 0.18, 8]} />
+          <meshStandardMaterial color="#654321" />
+        </mesh>
+        {/* 柄頭（ポンメル） */}
+        <mesh position={[0, -0.45, 0]} castShadow>
+          <sphereGeometry args={[0.06, 8, 8]} />
           <meshStandardMaterial color="#8b4513" />
         </mesh>
       </group>
       
+      {/* 攻撃範囲の可視化（攻撃中のみ表示） */}
+      {player.isAttacking && (
+        <mesh position={[1.5, 0.3, 0]} rotation={[0, Math.PI / 2, 0]}>
+          <cylinderGeometry args={[GAME_CONFIG.player.attackRange, GAME_CONFIG.player.attackRange, 0.1, 32]} />
+          <meshBasicMaterial 
+            color="#ffff00" 
+            transparent 
+            opacity={0.3 + Math.sin(attackTimeRef.current * 20) * 0.2}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      )}
+      
+      {/* 攻撃エフェクト（斬撃の軌跡） */}
+      {player.isAttacking && attackTimeRef.current < 0.2 && (
+        <group position={[1.2, 0.3, 0]}>
+          <mesh rotation={[0, 0, Math.PI / 4]}>
+            <planeGeometry args={[0.2, 2.5]} />
+            <meshBasicMaterial 
+              color="#88ddff" 
+              transparent 
+              opacity={0.6 - attackTimeRef.current * 3}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+        </group>
+      )}
+      
       {/* 盾 */}
       {player.isDefending && (
-        <mesh position={[-0.5, 0.1, 0.2]} rotation={[0, 0.3, 0]} castShadow>
-          <boxGeometry args={[0.1, 0.5, 0.4]} />
-          <meshStandardMaterial color="#1e4d8c" />
+        <mesh position={[-0.55, 0.15, 0.15]} rotation={[0, 0.4, 0]} castShadow>
+          <boxGeometry args={[0.12, 0.6, 0.5]} />
+          <meshStandardMaterial color="#1e4d8c" metalness={0.6} roughness={0.3} />
         </mesh>
       )}
     </group>

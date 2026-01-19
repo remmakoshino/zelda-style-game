@@ -9,12 +9,12 @@ export const GAME_CONFIG = {
     rotationSpeed: 10,
     maxHealth: 6, // ハート3つ（1ハート=2HP）
     maxMagic: 100,
-    attackDamage: 1,
-    attackRange: 1.5,
-    attackCooldown: 0.5,
+    attackDamage: 2,
+    attackRange: 3.5,
+    attackCooldown: 0.4,
     rollSpeed: 10,
     rollDuration: 0.5,
-    invincibilityTime: 1,
+    invincibilityTime: 1.5,
   },
 
   // カメラ設定
