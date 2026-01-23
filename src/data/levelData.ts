@@ -3,7 +3,7 @@
 // レベルデータの型定義
 export interface LevelObject {
   id: string;
-  type: 'ground' | 'tree' | 'rock' | 'building' | 'water' | 'bridge' | 'chest' | 'door';
+  type: 'ground' | 'tree' | 'rock' | 'building' | 'water' | 'bridge' | 'chest' | 'door' | 'wall' | 'switch' | 'hookshot_target';
   position: [number, number, number];
   rotation?: [number, number, number];
   scale?: [number, number, number];
@@ -16,7 +16,8 @@ export interface EnemySpawn {
   type: string;
   position: [number, number, number];
   patrolPoints?: [number, number, number][];
-  respawn: boolean;
+  respawn?: boolean;
+  nightOnly?: boolean;
 }
 
 export interface NPCData {
@@ -109,8 +110,17 @@ export const MAIN_FIELD: LevelData = {
       rotation: [0, -Math.PI / 2, 0],
       properties: { targetLevel: 'dungeon_1', locked: false },
     },
+    // 水の神殿入口
+    {
+      id: 'water_temple_door',
+      type: 'door',
+      position: [-40, 0, -30],
+      rotation: [0, Math.PI / 4, 0],
+      properties: { targetLevel: 'water_temple', locked: false },
+    },
   ],
   enemies: [
+    // スライム - 基本的な敵
     {
       id: 'enemy_1',
       type: 'slime',
@@ -123,6 +133,7 @@ export const MAIN_FIELD: LevelData = {
       position: [-5, 0.5, 8],
       respawn: true,
     },
+    // スケルトン - 剣を持った骸骨
     {
       id: 'enemy_3',
       type: 'skeleton',
@@ -132,6 +143,96 @@ export const MAIN_FIELD: LevelData = {
         [25, 0.5, -5],
         [20, 0.5, 0],
       ],
+      respawn: true,
+    },
+    // リザルフォス - 俊敏なトカゲ戦士
+    {
+      id: 'enemy_lizalfos_1',
+      type: 'lizalfos',
+      position: [-25, 0.5, 20],
+      patrolPoints: [
+        [-25, 0.5, 20],
+        [-30, 0.5, 25],
+        [-20, 0.5, 22],
+      ],
+      respawn: true,
+    },
+    {
+      id: 'enemy_lizalfos_2',
+      type: 'lizalfos',
+      position: [30, 0.5, -25],
+      respawn: true,
+    },
+    // スタルフォス - 上級骸骨戦士
+    {
+      id: 'enemy_stalfos_1',
+      type: 'stalfos',
+      position: [-35, 0.5, -30],
+      patrolPoints: [
+        [-35, 0.5, -30],
+        [-30, 0.5, -25],
+      ],
+      respawn: true,
+    },
+    // キース - 空飛ぶコウモリ
+    {
+      id: 'enemy_keese_1',
+      type: 'keese',
+      position: [15, 2, -20],
+      respawn: true,
+    },
+    {
+      id: 'enemy_keese_2',
+      type: 'keese',
+      position: [-15, 2, 25],
+      respawn: true,
+    },
+    {
+      id: 'enemy_keese_3',
+      type: 'keese',
+      position: [28, 2, 15],
+      respawn: true,
+    },
+    // ゴースト - 夜のみ出現
+    {
+      id: 'enemy_ghost_1',
+      type: 'ghost',
+      position: [0, 1, -30],
+      nightOnly: true,
+      respawn: true,
+    },
+    {
+      id: 'enemy_ghost_2',
+      type: 'ghost',
+      position: [-30, 1, 0],
+      nightOnly: true,
+      respawn: true,
+    },
+    {
+      id: 'enemy_ghost_3',
+      type: 'ghost',
+      position: [35, 1, 28],
+      nightOnly: true,
+      respawn: true,
+    },
+    // デクババ - 植物の敵
+    {
+      id: 'enemy_deku_baba_1',
+      type: 'deku_baba',
+      position: [22, 0.5, 30],
+      respawn: true,
+    },
+    {
+      id: 'enemy_deku_baba_2',
+      type: 'deku_baba',
+      position: [-32, 0.5, 15],
+      respawn: true,
+    },
+    // フリザド - 氷の精霊
+    {
+      id: 'enemy_frizzard_1',
+      type: 'frizzard',
+      position: [-40, 0.5, -35],
       respawn: true,
     },
   ],
@@ -219,10 +320,259 @@ export const DUNGEON_1: LevelData = {
   npcs: [],
 };
 
+// 水の神殿データ
+export const WATER_TEMPLE: LevelData = {
+  id: 'water_temple',
+  name: '水の神殿',
+  spawnPoint: [0, 1, 25],
+  bounds: {
+    min: [-40, -10, -40],
+    max: [40, 20, 40],
+  },
+  objects: [
+    // メインフロア
+    {
+      id: 'water_floor_main',
+      type: 'ground',
+      position: [0, 0, 0],
+      scale: [60, 1, 60],
+      color: '#1a4a6e',
+    },
+    // 水のプール（中央）
+    {
+      id: 'water_pool_center',
+      type: 'water',
+      position: [0, -1, 0],
+      scale: [20, 2, 20],
+    },
+    // 水中通路
+    {
+      id: 'water_channel_1',
+      type: 'water',
+      position: [-25, -0.5, 0],
+      scale: [10, 1, 30],
+    },
+    {
+      id: 'water_channel_2',
+      type: 'water',
+      position: [25, -0.5, 0],
+      scale: [10, 1, 30],
+    },
+    // 柱（装飾）
+    {
+      id: 'pillar_1',
+      type: 'wall',
+      position: [-15, 3, -15],
+      scale: [2, 6, 2],
+      color: '#2a5a7e',
+    },
+    {
+      id: 'pillar_2',
+      type: 'wall',
+      position: [15, 3, -15],
+      scale: [2, 6, 2],
+      color: '#2a5a7e',
+    },
+    {
+      id: 'pillar_3',
+      type: 'wall',
+      position: [-15, 3, 15],
+      scale: [2, 6, 2],
+      color: '#2a5a7e',
+    },
+    {
+      id: 'pillar_4',
+      type: 'wall',
+      position: [15, 3, 15],
+      scale: [2, 6, 2],
+      color: '#2a5a7e',
+    },
+    // 外壁
+    {
+      id: 'water_wall_north',
+      type: 'wall',
+      position: [0, 5, -30],
+      scale: [60, 10, 2],
+      color: '#1a3a5e',
+    },
+    {
+      id: 'water_wall_south',
+      type: 'wall',
+      position: [0, 5, 30],
+      scale: [60, 10, 2],
+      color: '#1a3a5e',
+    },
+    {
+      id: 'water_wall_east',
+      type: 'wall',
+      position: [30, 5, 0],
+      scale: [2, 10, 60],
+      color: '#1a3a5e',
+    },
+    {
+      id: 'water_wall_west',
+      type: 'wall',
+      position: [-30, 5, 0],
+      scale: [2, 10, 60],
+      color: '#1a3a5e',
+    },
+    // 宝箱 - ダンジョンマップ
+    {
+      id: 'water_chest_map',
+      type: 'chest',
+      position: [-20, 0.5, -20],
+      properties: { itemId: 'dungeon_map', quantity: 1 },
+    },
+    // 宝箱 - コンパス
+    {
+      id: 'water_chest_compass',
+      type: 'chest',
+      position: [20, 0.5, -20],
+      properties: { itemId: 'compass', quantity: 1 },
+    },
+    // 宝箱 - ボス鍵
+    {
+      id: 'water_chest_boss_key',
+      type: 'chest',
+      position: [0, 0.5, -25],
+      properties: { itemId: 'key', quantity: 1 },
+    },
+    // 宝箱 - 氷の矢
+    {
+      id: 'water_chest_ice_arrow',
+      type: 'chest',
+      position: [-25, 0.5, 10],
+      properties: { itemId: 'ice_arrow', quantity: 10 },
+    },
+    // ボス部屋への扉
+    {
+      id: 'water_boss_door',
+      type: 'door',
+      position: [0, 0, -28],
+      properties: { targetLevel: 'water_boss', locked: true, requiresKey: true },
+    },
+    // 出口
+    {
+      id: 'water_exit',
+      type: 'door',
+      position: [0, 0, 28],
+      rotation: [0, Math.PI, 0],
+      properties: { targetLevel: 'main_field' },
+    },
+    // スイッチ（水位変更用）
+    {
+      id: 'water_switch_1',
+      type: 'switch',
+      position: [-20, 0.3, 0],
+      properties: { activates: 'water_level_1' },
+    },
+    {
+      id: 'water_switch_2',
+      type: 'switch',
+      position: [20, 0.3, 0],
+      properties: { activates: 'water_level_2' },
+    },
+    // 中央の島（フックショット用のポイント）
+    {
+      id: 'center_platform',
+      type: 'ground',
+      position: [0, 1, 0],
+      scale: [8, 0.5, 8],
+      color: '#3a6a8e',
+    },
+    // フックショットポイント
+    {
+      id: 'hookshot_point_1',
+      type: 'hookshot_target',
+      position: [0, 4, -15],
+    },
+    {
+      id: 'hookshot_point_2',
+      type: 'hookshot_target',
+      position: [-15, 4, 0],
+    },
+    {
+      id: 'hookshot_point_3',
+      type: 'hookshot_target',
+      position: [15, 4, 0],
+    },
+  ],
+  enemies: [
+    // フリザド - 氷の精霊（水の神殿のメイン敵）
+    {
+      id: 'water_frizzard_1',
+      type: 'frizzard',
+      position: [-10, 0.5, -10],
+      respawn: false,
+    },
+    {
+      id: 'water_frizzard_2',
+      type: 'frizzard',
+      position: [10, 0.5, -10],
+      respawn: false,
+    },
+    {
+      id: 'water_frizzard_3',
+      type: 'frizzard',
+      position: [0, 0.5, 10],
+      respawn: false,
+    },
+    // リザルフォス - 水辺に生息
+    {
+      id: 'water_lizalfos_1',
+      type: 'lizalfos',
+      position: [-22, 0.5, 15],
+      patrolPoints: [
+        [-22, 0.5, 15],
+        [-22, 0.5, -15],
+      ],
+      respawn: false,
+    },
+    {
+      id: 'water_lizalfos_2',
+      type: 'lizalfos',
+      position: [22, 0.5, -15],
+      patrolPoints: [
+        [22, 0.5, -15],
+        [22, 0.5, 15],
+      ],
+      respawn: false,
+    },
+    // キース - 天井近くを飛ぶ
+    {
+      id: 'water_keese_1',
+      type: 'keese',
+      position: [-12, 3, 8],
+      respawn: false,
+    },
+    {
+      id: 'water_keese_2',
+      type: 'keese',
+      position: [12, 3, 8],
+      respawn: false,
+    },
+    {
+      id: 'water_keese_3',
+      type: 'keese',
+      position: [0, 3, -18],
+      respawn: false,
+    },
+    // スケルトン - 守護者
+    {
+      id: 'water_skeleton_1',
+      type: 'skeleton',
+      position: [0, 0.5, -22],
+      respawn: false,
+    },
+  ],
+  npcs: [],
+};
+
 // レベルマップ
 export const LEVELS: Record<string, LevelData> = {
   main_field: MAIN_FIELD,
   dungeon_1: DUNGEON_1,
+  water_temple: WATER_TEMPLE,
 };
 
 // 現在のレベルを取得

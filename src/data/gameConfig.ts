@@ -51,6 +51,7 @@ export const GAME_CONFIG = {
 
 // アイテムID
 export const ItemId = {
+  // 武器
   SWORD: 'sword',
   SHIELD: 'shield',
   BOW: 'bow',
@@ -58,10 +59,42 @@ export const ItemId = {
   HOOKSHOT: 'hookshot',
   BOOMERANG: 'boomerang',
   SLINGSHOT: 'slingshot',
+  MAGIC_ROD: 'magic_rod',
+  
+  // ツール
+  LANTERN: 'lantern',
+  FISHING_ROD: 'fishing_rod',
+  SHOVEL: 'shovel',
+  BUG_NET: 'bug_net',
+  
+  // 消費アイテム
   HEART_CONTAINER: 'heart_container',
+  HEART_PIECE: 'heart_piece',
   MAGIC_JAR: 'magic_jar',
+  RED_POTION: 'red_potion',
+  GREEN_POTION: 'green_potion',
+  BLUE_POTION: 'blue_potion',
+  FAIRY: 'fairy',
+  ARROW: 'arrow',
+  FIRE_ARROW: 'fire_arrow',
+  ICE_ARROW: 'ice_arrow',
+  LIGHT_ARROW: 'light_arrow',
+  
+  // 鍵アイテム
   KEY: 'key',
   BOSS_KEY: 'boss_key',
+  DUNGEON_MAP: 'dungeon_map',
+  COMPASS: 'compass',
+  
+  // 素材
+  RUPEE_GREEN: 'rupee_green',
+  RUPEE_BLUE: 'rupee_blue',
+  RUPEE_RED: 'rupee_red',
+  RUPEE_PURPLE: 'rupee_purple',
+  RUPEE_SILVER: 'rupee_silver',
+  RUPEE_GOLD: 'rupee_gold',
+  DEKU_NUT: 'deku_nut',
+  DEKU_STICK: 'deku_stick',
 } as const;
 
 export type ItemId = typeof ItemId[keyof typeof ItemId];

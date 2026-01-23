@@ -10,7 +10,9 @@ import { Enemy } from './World/Enemy';
 import { NPC } from './World/NPC';
 import { Environment } from './World/Environment';
 import { CameraController } from './World/CameraController';
+import { DayNightLighting } from './World/DayNightLighting';
 import { HUD } from './UI/HUD';
+import { TimeDisplay } from './UI/TimeDisplay';
 import VirtualControls, { DialogueBox, PauseMenu, GameOverScreen } from './UI/Controls';
 
 // レベルデータ
@@ -22,29 +24,8 @@ const Scene: React.FC = () => {
   
   return (
     <>
-      {/* 環境光 */}
-      <ambientLight intensity={0.4} />
-      
-      {/* 太陽光 */}
-      <directionalLight
-        position={[50, 80, -50]}
-        intensity={1}
-        castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
-        shadow-camera-far={150}
-        shadow-camera-left={-50}
-        shadow-camera-right={50}
-        shadow-camera-top={50}
-        shadow-camera-bottom={-50}
-      />
-      
-      {/* 半球光（空からの光） */}
-      <hemisphereLight
-        color="#87ceeb"
-        groundColor="#4a7c4e"
-        intensity={0.3}
-      />
+      {/* 昼夜ライティングシステム */}
+      <DayNightLighting enableFog={true} />
       
       {/* プレイヤー */}
       <Player initialPosition={level.spawnPoint} />
@@ -112,6 +93,9 @@ export const Game: React.FC = () => {
       
       {/* HUD */}
       <HUD />
+      
+      {/* 時間表示 */}
+      <TimeDisplay />
       
       {/* バーチャルコントロール（モバイル用） */}
       <VirtualControls />
